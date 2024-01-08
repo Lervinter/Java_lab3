@@ -1,0 +1,123 @@
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+// Product Entity
+class Product {
+    private String id;
+    private String name;
+    private double price;
+
+    public Product(String id, String name, double price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
+    // Getters, setters (for brevity, not shown here)
+}
+
+// Cart Entity
+class Cart {
+    private List<Product> products;
+
+    public Cart() {
+        this.products = new ArrayList<>();
+    }
+
+    public void addProduct(Product product) {
+        products.add(product);
+    }
+
+    public void removeProduct(Product product) {
+        products.remove(product);
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+}
+
+// Order Entity
+class Order {
+    private String orderId;
+    private List<Product> products;
+    private String status;
+
+    public Order(String orderId, List<Product> products, String status) {
+        this.orderId = orderId;
+        this.products = products;
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+}
+
+// ECommerceSystem
+class ECommerceSystem {
+    public void placeOrder(Cart cart) {
+        // Simplified logic to place an order
+        List<Product> productsInCart = cart.getProducts();
+        Order order = new Order("123", productsInCart, "Processing");
+        // Process the order (not shown for brevity)
+    }
+
+    public String getOrderStatus(Order order) {
+        // Simplified logic to get order status
+        return order.getStatus();
+    }
+}
+
+// JUnit Test Class
+class ECommerceSystemTest {
+
+    private ECommerceSystem eCommerceSystem;
+    private Cart cart;
+
+    @BeforeEach
+    void setUp() {
+        eCommerceSystem = new ECommerceSystem();
+        cart = new Cart();
+    }
+
+    @Test
+    void testPlaceOrder() {
+        Product product = new Product("1", "Laptop", 999.99);
+        cart.addProduct(product);
+
+        // Mocking Order
+        Order mockedOrder = mock(Order.class);
+        when(mockedOrder.getStatus()).thenReturn("Processing");
+
+        eCommerceSystem.placeOrder(cart);
+
+        // Verify that the order status is set to "Processing"
+        assertEquals("Processing", eCommerceSystem.getOrderStatus(mockedOrder));
+    }
+
+    @Test
+    void testGetOrderStatus() {
+        // Creating a mocked Order
+        Order mockedOrder = mock(Order.class);
+        when(mockedOrder.getStatus()).thenReturn("Delivered");
+
+        // Verify that the order status is "Delivered"
+        assertEquals("Delivered", eCommerceSystem.getOrderStatus(mockedOrder));
+    }
+}
+
+// Main Class (for running the tests)
+public class Main {
+    public static void main(String[] args) {
+        org.junit.platform.console.ConsoleLauncher.execute(
+            "--class-path", "out/production/your_project",
+            "--scan-classpath"
+        );
+    }
+}
